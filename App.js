@@ -4,6 +4,10 @@ import { GiftedChat, InputToolbar } from 'react-native-gifted-chat';
 import { Ionicons } from '@expo/vector-icons';
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#E91E63',
+  },
   appBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -15,7 +19,6 @@ const styles = StyleSheet.create({
   titleContainer: {
     alignSelf: 'center',
     padding: 10,
-    
   },
   titleText: {
     fontSize: 24,
@@ -23,7 +26,6 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   message: {
-    
   }
 });
 
@@ -35,40 +37,42 @@ export default function App() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#E91E63" />
-      <View style={styles.appBar}>
-        <TouchableOpacity onPress={() => {/* Add your desired functionality */}}>
-          <Ionicons name="arrow-back" size={24} color="white" />
-        </TouchableOpacity>
-        <View style={styles.titleContainer}>
-          <Text style={styles.titleText}>Name</Text>
-        </View>
-        <TouchableOpacity onPress={() => {/* Add your desired functionality */}}>
-          <Ionicons name="menu" size={24} color="white" />
-        </TouchableOpacity>
-      </View>
-      <GiftedChat
-      style={styles.message}
-        messages={messages}
-        onSend={(newMessage) => onSend(newMessage)}
-        user={{
-          _id: 1,
-        }}
-        renderUsernameOnMessage
-        listViewProps={{
-          style: {
-          backgroundColor: 'white',
-          
-          
-          },
-        }}
-        renderInputToolbar={(props) => (
-          <View style={{ backgroundColor: 'white', borderTopWidth: 1, borderTopColor: '#E8E8E8' }}>
-            <InputToolbar {...props} />
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.appBar}>
+          <TouchableOpacity onPress={() => {/* Add your desired functionality */}}>
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+          <View style={styles.titleContainer}>
+            <Text style={styles.titleText}>Name</Text>
           </View>
-        )}
-      />
-    </SafeAreaView>
+          <TouchableOpacity onPress={() => {/* Add your desired functionality */}}>
+            <Ionicons name="menu" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+        <GiftedChat
+          style={styles.message}
+          messages={messages}
+          onSend={(newMessage) => onSend(newMessage)}
+          user={{
+            _id: 1,
+          }}
+          renderUsernameOnMessage
+          listViewProps={{
+            style: {
+              backgroundColor: 'white',
+            },
+            contentInset: { top: 0, bottom: 20 },
+            contentOffset: { x: 0, y: -20 },
+          }}
+          renderInputToolbar={(props) => (
+            <View style={{ backgroundColor: 'white', borderTopWidth: 1, borderTopColor: '#E8E8E8' }}>
+              <InputToolbar {...props} />
+            </View>
+          )}
+        />
+      </SafeAreaView>
+    </View>
   );
 }
