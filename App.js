@@ -1,27 +1,33 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StatusBar } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { GiftedChat } from 'react-native-gifted-chat';
+import { SafeAreaView, StatusBar, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { GiftedChat, InputToolbar } from 'react-native-gifted-chat';
 import { Ionicons } from '@expo/vector-icons';
-import { TouchableOpacity, View, Text } from 'react-native';
 
-const Stack = createStackNavigator();
+const styles = StyleSheet.create({
+  appBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#E91E63',
+    elevation: 5,
+  },
+  titleContainer: {
+    alignSelf: 'center',
+    padding: 10,
+    
+  },
+  titleText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  message: {
+    
+  }
+});
 
-const AppBar = ({ navigation }) => {
-  return (
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, backgroundColor: 'pink' }}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={24} color="black" />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => {/* Add a function when I think of ui functionality */}}>
-        <Ionicons name="menu" size={24} color="black" />
-      </TouchableOpacity>
-    </View>
-  );
-};
-
-const ChatScreen = ({ navigation }) => {
+export default function App() {
   const [messages, setMessages] = useState([]);
 
   function onSend(newMessage = []) {
@@ -29,36 +35,40 @@ const ChatScreen = ({ navigation }) => {
   }
 
   return (
-    <>
-      <AppBar navigation={navigation} />
-      <View style={{ alignSelf: 'center', padding: 10 }}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Name</Text>
+    <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar barStyle="light-content" backgroundColor="#E91E63" />
+      <View style={styles.appBar}>
+        <TouchableOpacity onPress={() => {/* Add your desired functionality */}}>
+          <Ionicons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleText}>Name</Text>
+        </View>
+        <TouchableOpacity onPress={() => {/* Add your desired functionality */}}>
+          <Ionicons name="menu" size={24} color="white" />
+        </TouchableOpacity>
       </View>
       <GiftedChat
+      style={styles.message}
         messages={messages}
         onSend={(newMessage) => onSend(newMessage)}
         user={{
           _id: 1,
-        }}/>
-    </>
-  );
-};
-
-export default function App() {
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar barStyle="dark-content" />
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Chat"
-            component={ChatScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+        }}
+        renderUsernameOnMessage
+        listViewProps={{
+          style: {
+          backgroundColor: 'white',
+          
+          
+          },
+        }}
+        renderInputToolbar={(props) => (
+          <View style={{ backgroundColor: 'white', borderTopWidth: 1, borderTopColor: '#E8E8E8' }}>
+            <InputToolbar {...props} />
+          </View>
+        )}
+      />
     </SafeAreaView>
   );
 }
