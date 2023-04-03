@@ -1,124 +1,64 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState } from 'react';
+import { SafeAreaView, StatusBar } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { GiftedChat } from 'react-native-gifted-chat';
+import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity, View, Text } from 'react-native';
 
-const PushupApp = () => {
-  const [count, setCount] = useState(0);
-  const [lastPress, setLastPress] = useState(null);
+const Stack = createStackNavigator();
 
-  const storeData = async (key, value) => {
-    try {
-      await AsyncStorage.setItem(key, value);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const getData = async key => {
-    try {
-      const value = await AsyncStorage.getItem(key);
-      if (value !== null) {
-        return value;
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  useEffect(() => {
-    const checkAndUpdate = async () => {
-      const lastPressDate = await getData('lastPress');
-      setLastPress(lastPressDate);
-
-      if (lastPressDate) {
-        const today = new Date().toISOString().slice(0, 10);
-        if (lastPressDate !== today) {
-          setCount(0);
-          setLastPress(today);
-          storeData('lastPress', today);
-        } else {
-          const storedCount = await getData('count');
-          setCount(parseInt(storedCount, 10));
-        }
-      }
-    };
-
-    checkAndUpdate();
-  }, []);
-
-  const onPushupPress = () => {
-    const newCount = count + 1;
-    setCount(newCount);
-    storeData('count', newCount.toString());
-    const today = new Date().toISOString().slice(0, 10);
-    setLastPress(today);
-    storeData('lastPress', today);
-  };
-
-  const onMinusPress = () => {
-    if (count > 0) {
-      const newCount = count - 1;
-      setCount(newCount);
-      storeData('count', newCount.toString());
-    } else {
-      Alert.alert("You can't go below zero!");
-    }
-  };
-
+const AppBar = ({ navigation }) => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Pushup Counter</Text>
-      <TouchableOpacity style={styles.button} onPress={onPushupPress}>
-        <Text style={styles.buttonText}>Pushup!</Text>
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, backgroundColor: 'pink' }}>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Ionicons name="arrow-back" size={24} color="black" />
       </TouchableOpacity>
-      <Text style={styles.count}>{count}</Text>
-      <TouchableOpacity style={styles.minusButton} onPress={onMinusPress}>
-        <Text style={styles.minusButtonText}>-1</Text>
+      <TouchableOpacity onPress={() => {/* Add a function when I think of ui functionality */}}>
+        <Ionicons name="menu" size={24} color="black" />
       </TouchableOpacity>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 30,
-    },
-button: {
-backgroundColor: '#1E90FF',
-borderRadius: 10,
-paddingHorizontal: 40,
-paddingVertical: 20,
-},
-buttonText: {
-color: 'white',
-fontSize: 24,
-fontWeight: 'bold',
-},
-count: {
-fontSize: 48,
-fontWeight: 'bold',
-marginTop: 30,
-marginBottom: 30,
-},
-minusButton: {
-backgroundColor: '#FF6347',
-borderRadius: 50,
-paddingHorizontal: 20,
-paddingVertical: 10,
-},
-minusButtonText: {
-color: 'white',
-fontSize: 18,
-fontWeight: 'bold',
-},
-});
+const ChatScreen = ({ navigation }) => {
+  const [messages, setMessages] = useState([]);
 
-export default PushupApp;
+  function onSend(newMessage = []) {
+    setMessages((previousMessages) => GiftedChat.append(previousMessages, newMessage));
+  }
+
+  return (
+    <>
+      <AppBar navigation={navigation} />
+      <View style={{ alignSelf: 'center', padding: 10 }}>
+        <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Name</Text>
+      </View>
+      <GiftedChat
+        messages={messages}
+        onSend={(newMessage) => onSend(newMessage)}
+        user={{
+          _id: 1,
+        }}/>
+    </>
+  );
+};
+
+export default function App() {
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar barStyle="dark-content" />
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Chat"
+            component={ChatScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaView>
+  );
+}
