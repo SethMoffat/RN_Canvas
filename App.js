@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   message: {
+    bottomOffset:-40
   }
 });
 
